@@ -1,0 +1,24 @@
+
+$bg-primary: white;
+$bg-secondary: rgb(213, 214, 227);
+
+$text-primary: rgb(11, 10, 14);
+
+
+
+.App {
+  text-align: center;
+  color: $text-primary;
+}
+
+.--bg-primary {
+  background-color: $bg-primary;
+}
+
+.--bg-secondary {
+  background-color: $bg-secondary;
+}
+
+.--text-xl {
+  font-size: 3rem;
+}
