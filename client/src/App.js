@@ -8,8 +8,10 @@ import {
 } from "react-router-dom";
 import MyNavbar from './components/Navbar';
 import Home from "./pages/Home";
+import Browse from "./pages/Browse";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Edit from "./pages/Edit";
 
 const Layout = () => {
   return(
@@ -29,7 +31,14 @@ const router = createBrowserRouter([
         path: "/",
         element: <Home/>,
       }, 
-      
+      {
+        path:"/browse",
+        element: <Browse/>
+      },
+      {
+        path:"/edit",
+        element: <Edit/>
+      }
     ]
   }, 
   {

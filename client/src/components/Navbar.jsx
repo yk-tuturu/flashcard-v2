@@ -7,12 +7,12 @@ const MyNavbar = () => {
   return (
     <Navbar bg="light" variant="light" expand="lg">
       <Container>
-        <Navbar.Brand href="#home">Flashcard-site</Navbar.Brand>
+        <Navbar.Brand href="/">Flashcard-site</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/browse" className='mx-2'>Browse</Nav.Link>
-            <Nav.Link href="/create" className='mx-2'>Create</Nav.Link>
+            <Nav.Link href="/edit" className='mx-2'>Create</Nav.Link>
             
           </Nav>
           <Nav>

@@ -13,10 +13,10 @@ import CardGroup from 'react-bootstrap/CardGroup';
 
 const Home = () => {
   return (
-    <Container fluid className='--bg-secondary p-4'>
+    <Container fluid className='--bg-secondary p-4 fill-screen'>
         <Row className='justify-content-md-center'>
             <Col xs={12} lg={9}>
-                <Card className='px-5 py-4 mx-2 mb-4'>
+                <Card className='px-3 py-4 mx-2 mb-4'>
                     <Card.Body>
                         <Card.Text className="--text-xl">Welcome to Flashcard-site</Card.Text>
                         <Card.Text className='fs-5'>
@@ -28,7 +28,7 @@ const Home = () => {
                 </Card>
             </Col>
         </Row>
-        <Row className='justify-content-md-center'>
+        <Row xs={1} lg={3} className='justify-content-md-center'>
             <Col xs={12} lg={9}>
             <CardGroup>
                 <Card className='mx-2'>
@@ -40,9 +40,6 @@ const Home = () => {
                         to additional content. This content is a little bit longer.
                     </Card.Text>
                     </Card.Body>
-                    <Card.Footer>
-                    <small className="text-muted">Last updated 3 mins ago</small>
-                    </Card.Footer>
                 </Card>
                 <Card className='mx-2'> 
                     <Card.Img variant="top" src="https://picsum.photos/seed/234/280/160" />
@@ -53,9 +50,6 @@ const Home = () => {
                         additional content.{' '}
                     </Card.Text>
                     </Card.Body>
-                    <Card.Footer>
-                    <small className="text-muted">Last updated 3 mins ago</small>
-                    </Card.Footer>
                 </Card>
                 <Card className='mx-2'>
                 <Card.Img variant="top" src="https://picsum.photos/seed/345/280/160" />
@@ -67,9 +61,6 @@ const Home = () => {
                         first to show that equal height action.
                     </Card.Text>
                     </Card.Body>
-                    <Card.Footer>
-                    <small className="text-muted">Last updated 3 mins ago</small>
-                    </Card.Footer>
                 </Card>
                 </CardGroup>
             </Col>
