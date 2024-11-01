@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.scss';
@@ -11,22 +10,31 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import CloseButton from 'react-bootstrap/CloseButton';
 
-const Login = () => {
-  const navigate = useNavigate();
+const Register = () => {
+    const navigate = useNavigate();
   return (
     <Container fluid className='vh-100'>
-        <Row className="vh-100 justify-content-center text-start">
+        <Row className="w-100 vh-100 justify-content-center text-start">
         <Col lg={7} className="d-none d-md-block" style={{backgroundImage: `url('https://picsum.photos/1200/1200')`}}>
         </Col>
         <Col md={12} lg={5} className="d-flex flex-column justify-content-center p-5">
-          <CloseButton className="position-absolute top-0 end-0 m-3" onClick={()=>navigate("/")}/>
+            <CloseButton className="position-absolute top-0 end-0 m-3" onClick={()=>navigate("/")}/>
           <Form>
-          <h1 className="text-center mb-5">Login</h1>
-            <Form.Group controlId="formEmail" className="mb-5">
+          <h1 className="text-center mb-5">Register</h1>
+            <Form.Group controlId="formEmail" className="mb-4">
               <Form.Label>Email address</Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Enter email"
+                required
+                size="lg"
+              />
+            </Form.Group>
+            <Form.Group controlId="formEmail" className="mb-4">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter username"
                 required
                 size="lg"
               />
@@ -39,12 +47,12 @@ const Login = () => {
                 required
                 size="lg"
               />
-              <Form.Text>Forgot your password? Click <a>here</a></Form.Text>
+              <Form.Text>Password more than 8 alphanumeric characters</Form.Text>
             </Form.Group>
             <Button variant="primary" type="submit" className="btn-lg w-100">
-              Login
+              Register
             </Button>
-            <Form.Text>Don't have an account? Click <a href='/register'>here</a> to register</Form.Text>
+            <Form.Text>Already have an account? Click <a href='/login'>here</a> to login</Form.Text>
           </Form>
         </Col>
       </Row>
@@ -52,4 +60,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

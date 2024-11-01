@@ -1,8 +1,15 @@
 
 import React from 'react';
-import { Navbar, Nav, Container, NavDropdown, Row, Button, Col, Card, CardGroup } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.scss';
+
+// bootstrap
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
+import CardGroup from 'react-bootstrap/CardGroup';
 
 const Home = () => {
   return (
