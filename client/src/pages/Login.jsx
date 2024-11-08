@@ -1,7 +1,10 @@
 
-import React from 'react';
+import {useState, useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.scss';
+import { AuthContext } from "../context/authContext";
+import axios from "axios";
+
 
 // bootstrap
 import Button from 'react-bootstrap/Button';
@@ -13,6 +16,35 @@ import CloseButton from 'react-bootstrap/CloseButton';
 
 const Login = () => {
   const navigate = useNavigate();
+
+  const [info, setInfo] = useState({
+    username: "",
+    email: "", 
+    password: ""
+});
+
+const [error, setError] = useState(null)
+
+axios.defaults.withCredentials = true;
+
+// update login info
+const handleChange = (e) => {
+    setInfo((prev) => ({...prev, [e.target.name]: e.target.value}));
+    console.log(info)
+};
+
+const {login} = useContext(AuthContext);
+
+// submit login
+const handleClick = async(e) => {
+    e.preventDefault()
+    try{
+        await login(info)
+        navigate("/")
+    }catch(err){
+        setError(err.response.data)
+    }
+};
   return (
     <Container fluid className='vh-100'>
         <Row className="vh-100 justify-content-center text-start">
@@ -22,26 +54,41 @@ const Login = () => {
           <CloseButton className="position-absolute top-0 end-0 m-3" onClick={()=>navigate("/")}/>
           <Form>
           <h1 className="text-center mb-5">Login</h1>
-            <Form.Group controlId="formEmail" className="mb-5">
+          <Form.Group controlId="formUsername" className="mb-4">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                name="username"
+                placeholder="Enter username"
+                required
+                size="lg"
+                onChange={handleChange}
+              />
+            </Form.Group>
+            <Form.Group controlId="formEmail" className="mb-4">
               <Form.Label>Email address</Form.Label>
               <Form.Control
                 type="email"
+                name="email"
                 placeholder="Enter email"
                 required
                 size="lg"
+                onChange={handleChange}
               />
             </Form.Group>
-            <Form.Group controlId="formPassword" className="mb-5">
+            <Form.Group controlId="formPassword" className="mb-4">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
+                name="password"
                 placeholder="Password"
                 required
                 size="lg"
+                onChange={handleChange}
               />
               <Form.Text>Forgot your password? Click <a>here</a></Form.Text>
             </Form.Group>
-            <Button variant="primary" type="submit" className="btn-lg w-100">
+            <Button variant="primary" type="submit" className="btn-lg w-100" onClick={handleClick}>
               Login
             </Button>
             <Form.Text>Don't have an account? Click <a href='/register'>here</a> to register</Form.Text>

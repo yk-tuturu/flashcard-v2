@@ -1,9 +1,11 @@
 // src/components/Navbar.js
 
-import React from 'react';
+import {useContext} from 'react';
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import { AuthContext } from '../context/authContext';
 
 const MyNavbar = () => {
+  const {currentUser, logout} = useContext(AuthContext)
   return (
     <Navbar bg="light" variant="light" expand="lg">
       <Container>
@@ -16,8 +18,18 @@ const MyNavbar = () => {
             
           </Nav>
           <Nav>
-            <Nav.Link href="/account" className='mx-2'>Account</Nav.Link>
-            <Nav.Link href="/login" className='mx-2'>Login</Nav.Link>
+            {
+              currentUser ? (
+                <>
+                <Nav.Link href="/account" className='mx-2'>Account</Nav.Link>
+                <Nav.Link href="/login" onClick={logout} className='mx-2'>Logout</Nav.Link>
+                </>
+                
+              ) : (
+                <Nav.Link href="/login" className='mx-2'>Login</Nav.Link>
+              )
+            }
+            
             <NavDropdown title="More" id="basic-nav-dropdown">
             <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
             <NavDropdown.Item href="#action/3.2">Another Action</NavDropdown.Item>

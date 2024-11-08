@@ -3,9 +3,9 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
 export const login = (req, res) => {
-    const q = "SELECT * FROM users WHERE username = ?"
+    const q = "SELECT * FROM users WHERE username = ? AND email= ?"
     console.log(req.body)
-    db.query(q, [req.body.username], (err, data) => {
+    db.query(q, [req.body.username, req.body.email], (err, data) => {
         if (err) return res.json(err)
         if (data.length === 0) return res.status(404).json("User not found!")
         
@@ -22,6 +22,8 @@ export const login = (req, res) => {
     })
 }
 export const register = (req, res) => {
+    console.log('reached register')
+    console.log(req.body.username);
     const q = "SELECT * FROM users WHERE email = ? OR username = ?"
 
     db.query(q, [req.body.email, req.body.username], (err, data) => {

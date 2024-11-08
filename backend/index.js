@@ -1,5 +1,4 @@
 import express from "express"
-import mysql from "mysql2"
 import cors from "cors"
 import authRoutes from "./routes/auth_route.js"
 import cookieParser from "cookie-parser"
@@ -14,7 +13,7 @@ const corsOps = {
 app.use(express.json())
 app.use(cors(corsOps))
 app.use(cookieParser())
-app.use("/api/auth", authRoutes)
+app.use("/auth", authRoutes)
 
 app.listen(8800, () => {
     console.log("Connected to backend!")
