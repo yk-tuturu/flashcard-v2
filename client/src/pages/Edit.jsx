@@ -17,7 +17,7 @@ import 'react-quill/dist/quill.snow.css';
 const Edit = () => {
     return (
         <Container fluid className="--bg-secondary fill-screen text-start px-5 pt-5 d-flex justify-content-center">
-            <Col xs={12} lg={9}>
+            <Col xs={12} md={12} lg={9}>
                 <h2>Edit Flashcard Details</h2>
                 <Row xs={1} md={2}>
                     <Col>
@@ -56,7 +56,15 @@ const Edit = () => {
                 <h2>Edit Flashcards</h2>
                 
                
-                <Row xs={1} md={2} className="g-5">
+                <Row xs={1} md={2} className="g-4 mb-4">
+                    <Col>
+                        <ReactQuill theme="snow"/>
+                    </Col>
+                    <Col>
+                        <ReactQuill theme="snow"/>
+                    </Col>
+                </Row>
+                <Row xs={1} md={2} className="g-4 mb-4">
                     <Col>
                         <ReactQuill theme="snow"/>
                     </Col>
