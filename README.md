@@ -1,7 +1,8 @@
-Flashcard-site
+Flashcard-site v2
 ========================
 
-<p>Website for creating and revising flashcard decks. Work in progress!</p>
+<p>An updated version of https://github.com/yk-tuturu/flashcard-site</p>
+<p>Better UI, hopefully less scrambled code</p>
 <p>Technologies used: React, Express, Bootstrap, MySQL</p>
 
 <br> 
