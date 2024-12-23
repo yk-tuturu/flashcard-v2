@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useEffect, useImperativeHandle, useRef } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.scss';
 
@@ -8,19 +8,11 @@ import Col from 'react-bootstrap/Col';
 
 import Tiptap from './TipTap';
 
-
 const CardPair = forwardRef((props, ref) => {
-    // const [frontValue, setFrontValue] = useState(props.frontValue);
-    // const [backValue, setBackValue] = useState(props.backValue);
-
-    // useEffect(() => {
-    //     console.log(props.frontValue);
-    //     console.log(props.backValue);
-    //   }, []);
-
     const frontRef = useRef(null);
     const backRef = useRef(null); 
 
+    // buncha functions to get the content of, or focus the front and back
     useImperativeHandle(ref, ()=>{
         return {
             getFront() {
@@ -31,27 +23,51 @@ const CardPair = forwardRef((props, ref) => {
             getBack() {
                 const back = backRef.current.getText();
                 return back;
+            },
+            focusFront() {
+                frontRef.current.focus();
+            },
+            focusBack() {
+                backRef.current.focus();
             }
         }
     }, [])
 
-    const saveText = (side, text) => {
-        //props.functions.handleCardChange(props.index, side, text);
+    // just a bunch of functions to call functions in the parent component
+    const handleAdd = () => {
+        props.functions.addCard(props.index);
     }
+    
+    const handleDelete = () => {
+        props.functions.deleteCard(props.index);
+    }
+
+    const handleFrontChange = (content) => {
+        props.functions.handleCardChange(props.index, {front: content, back: props.backValue})
+    }
+
+    const handleBackChange = (content) => {
+        props.functions.handleCardChange(props.index, {front: props.frontValue, back: content})
+    }
+
     return (
         <div className="cardpair-container mb-4">
             {props.index + 1}.
             <Row xs={1} md={2} className="g-4">
                 <Col>
-                    <Tiptap side="front" initText={props.frontValue} ref={frontRef} ></Tiptap>
+                    <Tiptap side="front" index={props.index} initText={props.frontValue} handleFocusChange={props.functions.handleFocusChange} handleChange={handleFrontChange} ref={frontRef} ></Tiptap>
                 </Col>
                 <Col>
-                    <Tiptap side="back" initText={props.backValue} ref={backRef}></Tiptap>
+                    <Tiptap side="back" index={props.index} initText={props.backValue} handleFocusChange={props.functions.handleFocusChange} handleChange={handleBackChange} ref={backRef}></Tiptap>
                 </Col>
             </Row>
                 
+            <div className="cardpair-buttons d-flex flex-column">
+                <button onClick={handleAdd}><img src="/add.png" alt="add"></img></button>
+                <button onClick={handleDelete}><img src="/delete.png" alt="delete"></img></button>
+                <button {...props.listeners} {...props.attributes}><img src="/drag.png" alt="drag"></img></button>
+            </div>
             
-            <button>Add</button>
         </div>
     )
 })

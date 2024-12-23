@@ -4,8 +4,6 @@ import jwt from "jsonwebtoken"
 
 export const saveCards = (req, res) => {
     const newCards = req.body.cards
-
-    console.log(newCards)
     
     const q = "UPDATE flashsets SET title=?, subject=?, description=?, flashcards = ?, length=? WHERE id=?"
     const values = [
@@ -13,7 +11,7 @@ export const saveCards = (req, res) => {
         req.body.subject,
         req.body.description,
         newCards,
-        newCards.length, 
+        req.body.length, 
         req.body.id
     ]
     db.query(q, values, (err, data) => {
@@ -45,5 +43,35 @@ export const getCards = (req, res) => {
         if (err) return res.status(502).json(err)
         
         return res.status(200).json(data)
+    })
+}
+
+export const createCardSet = (req, res) => {
+    if (!req.body.title) {
+        return res.status(404).json("Title must not be null")
+    }
+
+    if (!req.body.subject) {
+        return res.status(404).json("Subject must not be null")
+    }
+
+    const emptyCard = [{
+        front: "",
+        back: ""
+    }]
+
+    const q = "INSERT INTO flashsets(`title`, `user_id`, `flashcards`, `subject`, `description`) VALUES (?)"
+    const values = [
+        req.body.title,
+        req.body.user_id,
+        JSON.stringify(emptyCard),
+        req.body.subject,
+        req.body.description
+    ]
+
+    db.query(q, [values], (err, data) => {
+        if (err) return res.json(err);
+        console.log(data)
+        return res.status(200).json({id: data.insertId})
     })
 }

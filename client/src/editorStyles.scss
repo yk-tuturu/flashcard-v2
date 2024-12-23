@@ -97,50 +97,62 @@
     }
   }
 
-  .tiptap-button-group img {
-    height: 20px;
+.tiptap-button-group{
+  background-color: #d7d3e4;
+  padding: 0vw 0.4vw;
 
-  }
-
-  .tiptap-button-group{
+  button {
+    border: none; 
     background-color: #d7d3e4;
-    padding: 0vw 0.4vw;
-
-    button {
-      border: none; 
-      background-color: #d7d3e4;
-      padding: 0.5vw 0.5vw;
-    }
-
-    .is-active {
-      background-color: #9d97ae !important
-    }
-
+    padding: 0.5vw 0.5vw;
   }
 
-  .ProseMirror {
-    background-color:white;
-    border: 1px solid #ddd;
-    height: 200px;
-    overflow-y: auto;
-    line-height: 1;
-    padding: 1vw;
-
-    p {
-      margin-bottom: 10px;
-    }    
+  .is-active {
+    background-color: #9d97ae !important
   }
 
-  .ProseMirror-focused:focus-visible {
-    outline: none;
+  img {
+    height: 20px;
+  }
+}
+
+.ProseMirror {
+  background-color:white;
+  border: 1px solid #ddd;
+  height: 200px;
+  overflow-y: auto;
+  line-height: 1;
+  padding: 1vw;
+
+  p {
+    margin-bottom: 10px;
+  }    
+}
+
+.ProseMirror-focused:focus-visible {
+  outline: none;
+}
+
+.tiptap-div:focus-within {
+  outline: 3px solid rgb(79, 60, 102);
+}
+
+.cardpair-container {
+  display: grid;
+  grid-template-columns: 0.05fr 2fr 0.1fr;
+  column-gap: 1rem;
+}
+
+.cardpair-buttons {
+  img {
+    height: 20px; 
+    margin: 10px 0px;
   }
 
-  .tiptap-div:focus-within {
-    outline: 3px solid rgb(79, 60, 102);
+  button {
+    margin: 4px 0px;
+    background-color: #d7d3e4;
+    border: none;
+    border-radius: 5px;
   }
-
-  .cardpair-container {
-    display: grid;
-    grid-template-columns: 0.05fr 2fr 0.1fr;
-    column-gap: 1rem;
-  }
+}

@@ -4,7 +4,7 @@ import TextAlign from '@tiptap/extension-text-align'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
-import {forwardRef, useImperativeHandle} from 'react'
+import {forwardRef, useImperativeHandle, useEffect} from 'react'
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
@@ -15,37 +15,37 @@ const MenuBar = ({ editor }) => {
     <div className="control-group">
       <div className="tiptap-button-group">
         <button onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}>
-          <img src="h1.png" alt="h1"></img>
+          <img src="/h1.png" alt="h1"></img>
         </button>
         <button onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}>
-        <img src="h2.png" alt="h2"></img>
+        <img src="/h2.png" alt="h2"></img>
         </button>
         <button onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}>
-        <img src="h3.png" alt="h3"></img>
+        <img src="/h3.png" alt="h3"></img>
         </button>
         <button onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? 'is-active' : ''}>
-        <img src="bold.png" alt="bold"></img>
+        <img src="/bold.png" alt="bold"></img>
         </button>
         <button onClick={() => editor.chain().focus().toggleItalic().run()} className={editor.isActive('italic') ? 'is-active' : ''}>
-        <img src="italic.png" alt="italic"></img>
+        <img src="/italic.png" alt="italic"></img>
         </button>
         <button onClick={() => editor.chain().focus().toggleUnderline().run()} className={editor.isActive('strike') ? 'is-active' : ''}>
-        <img src="underline.png" alt="underline"></img>
+        <img src="/underline.png" alt="underline"></img>
         </button>
         <button onClick={() => editor.chain().focus().toggleStrike().run()} className={editor.isActive('strike') ? 'is-active' : ''}>
-        <img src="strikethrough.png" alt="strikethrough"></img>
+        <img src="/strikethrough.png" alt="strikethrough"></img>
         </button>
         <button onClick={() => editor.chain().focus().setTextAlign('left').run()} className={editor.isActive({ textAlign: 'left' }) ? 'is-active' : ''}>
-        <img src="align-left.png" alt="align-left"></img>
+        <img src="/align-left.png" alt="align-left"></img>
         </button>
         <button onClick={() => editor.chain().focus().setTextAlign('center').run()} className={editor.isActive({ textAlign: 'center' }) ? 'is-active' : ''}>
-        <img src="align-center.png" alt="align-center"></img>
+        <img src="/align-center.png" alt="align-center"></img>
         </button>
         <button onClick={() => editor.chain().focus().setTextAlign('right').run()} className={editor.isActive({ textAlign: 'right' }) ? 'is-active' : ''}>
-        <img src="align-right.png" alt="align-right"></img>
+        <img src="/align-right.png" alt="align-right"></img>
         </button>
         <button onClick={() => editor.chain().focus().setTextAlign('justify').run()} className={editor.isActive({ textAlign: 'justify' }) ? 'is-active' : ''}>
-        <img src="justify.png" alt="justify"></img>
+        <img src="/justify.png" alt="justify"></img>
         </button>
       </div>
     </div>
@@ -53,7 +53,6 @@ const MenuBar = ({ editor }) => {
 }
 
 export default forwardRef((props, ref) => {
-  
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -63,6 +62,9 @@ export default forwardRef((props, ref) => {
       }),
     ],
     content: props.initText,
+    onUpdate: ({ editor }) => {
+      props.handleChange(editor.getHTML()); // Update content state on change
+    }
   })
 
   useImperativeHandle(ref, () => {
@@ -72,6 +74,44 @@ export default forwardRef((props, ref) => {
           return editor.getHTML();
         }
       },
+      focus() {
+        editor.commands.focus("end");
+      }
+    };
+  }, [editor]);
+
+  useEffect(() => {
+    if (!editor) return;
+
+    // Add an event listener for focus
+    editor.view.dom.addEventListener('focus', () => {
+      console.log('Editor focused!');
+      editor.commands.scrollIntoView();
+      props.handleFocusChange(props.side, props.index)
+    });
+
+    // Cleanup event listener
+    return () => {
+      editor.view.dom.removeEventListener('focus', () => {
+        console.log('Editor focus event cleaned up.');
+      });
+    };
+  }, [editor]);
+
+  useEffect(() => {
+    if (!editor) return;
+
+    // Add blur event listener
+    editor.view.dom.addEventListener('blur', () => {
+      console.log('Editor unfocused!');
+      props.handleFocusChange(props.side, -1)
+    });
+
+    // Cleanup on unmount
+    return () => {
+      editor.view.dom.removeEventListener('blur', () => {
+        console.log('Blur listener removed!');
+      });
     };
   }, [editor]);
 

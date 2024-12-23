@@ -12,6 +12,7 @@ import Browse from "./pages/Browse";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Edit from "./pages/Edit";
+import Create from './pages/Create';
 
 const Layout = () => {
   return(
@@ -36,8 +37,12 @@ const router = createBrowserRouter([
         element: <Browse/>
       },
       {
-        path:"/edit",
+        path:"/edit/:id",
         element: <Edit/>
+      }, 
+      {
+        path: "/create",
+        element: <Create/> 
       }
     ]
   }, 
