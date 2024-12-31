@@ -77,7 +77,7 @@ const Create = () => {
                             <option value="Social Sciences">Social Sciences</option>
                             <option value="Arts and Humanities">Arts and Humanities</option>
                             <option value="Math">Math</option>
-                            <option value="Language">Languages</option>
+                            <option value="Languages">Languages</option>
                             <option value="Others">Others</option>
                             </Form.Select>
                         </Form.Group>

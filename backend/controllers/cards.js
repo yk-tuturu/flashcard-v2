@@ -60,18 +60,59 @@ export const createCardSet = (req, res) => {
         back: ""
     }]
 
-    const q = "INSERT INTO flashsets(`title`, `user_id`, `flashcards`, `subject`, `description`) VALUES (?)"
+    const q = "INSERT INTO flashsets(`title`, `user_id`, `flashcards`, `subject`, `description`, `date_created`) VALUES (?, NOW())"
     const values = [
         req.body.title,
         req.body.user_id,
         JSON.stringify(emptyCard),
         req.body.subject,
-        req.body.description
+        req.body.description,
     ]
 
     db.query(q, [values], (err, data) => {
         if (err) return res.json(err);
         console.log(data)
         return res.status(200).json({id: data.insertId})
+    })
+}
+
+// this is quite disgusting, but i suck at backend code
+export const getCardSets = (req, res) => {
+    let searchTerm =  req.query.q || "";
+    let subjects = req.query.subject;
+    const limit = req.query.limit || 10;
+    const sort = req.query.sort || "Relevance"
+
+    if (subjects) {
+        subjects = subjects.split(",");
+    } else {
+        subjects = []
+    }
+
+    var processedSearch = "";
+    if (searchTerm.length > 5) {
+        processedSearch = "+" + searchTerm 
+    } else {
+        processedSearch = "%" + searchTerm + "%"
+    }
+    
+    let q = `SELECT *, MATCH(title) AGAINST(? IN BOOLEAN MODE) AS relevance
+            FROM flashsets 
+            WHERE ${searchTerm.length > 5 ? 'MATCH(title) AGAINST(? IN BOOLEAN MODE)' : 'title LIKE ?'}
+            ${subjects.length > 0 ? 'AND subject IN ?' : ''} `;
+
+    if (sort === "Relevance") {
+        q += "ORDER BY relevance DESC "
+    } else if (sort === "Popular") {
+        q += "ORDER BY likes DESC, bookmarks DESC "
+    } else if (sort === "Recent") {
+        q += "ORDER BY date_created DESC "
+    }
+
+    q += "LIMIT " + limit;
+    const values = subjects.length > 0 ? [processedSearch, processedSearch, [subjects], limit] : [processedSearch, processedSearch, limit];
+    db.query(q, values, (err, data) => {
+        if (err) return res.json(err);
+        return res.status(200).json(data)
     })
 }
