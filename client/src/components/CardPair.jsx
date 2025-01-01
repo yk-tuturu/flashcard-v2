@@ -43,11 +43,11 @@ const CardPair = forwardRef((props, ref) => {
     }
 
     const handleFrontChange = (content) => {
-        props.functions.handleCardChange(props.index, {front: content, back: props.backValue})
+        props.functions.handleCardChange(props.index, {id:props.id, front: content, back: props.backValue})
     }
 
     const handleBackChange = (content) => {
-        props.functions.handleCardChange(props.index, {front: props.frontValue, back: content})
+        props.functions.handleCardChange(props.index, {id:props.id, front: props.frontValue, back: content})
     }
 
     return (

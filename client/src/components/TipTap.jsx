@@ -85,7 +85,6 @@ export default forwardRef((props, ref) => {
 
     // Add an event listener for focus
     editor.view.dom.addEventListener('focus', () => {
-      console.log('Editor focused!');
       editor.commands.scrollIntoView();
       props.handleFocusChange(props.side, props.index)
     });
@@ -96,14 +95,13 @@ export default forwardRef((props, ref) => {
         console.log('Editor focus event cleaned up.');
       });
     };
-  }, [editor]);
+  }, [editor, props.side, props.index]);
 
   useEffect(() => {
     if (!editor) return;
 
     // Add blur event listener
     editor.view.dom.addEventListener('blur', () => {
-      console.log('Editor unfocused!');
       props.handleFocusChange(props.side, -1)
     });
 
@@ -113,7 +111,7 @@ export default forwardRef((props, ref) => {
         console.log('Blur listener removed!');
       });
     };
-  }, [editor]);
+  }, [editor, props.side, props.index]);
 
   return (
     <div className="tiptap-div">

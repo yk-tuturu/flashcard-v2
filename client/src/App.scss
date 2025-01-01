@@ -27,3 +27,7 @@ $text-primary: rgb(11, 10, 14);
   width: 100%;
 }
 
+.disable-horizontal-scroll {
+  overflow-x: hidden;
+}
+

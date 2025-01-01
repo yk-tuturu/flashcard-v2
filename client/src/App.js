@@ -14,6 +14,7 @@ import Register from "./pages/Register";
 import Edit from "./pages/Edit";
 import Create from './pages/Create';
 import Search from "./pages/Search";
+import View from "./pages/View";
 
 const Layout = () => {
   return(
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
       {
         path: "/create",
         element: <Create/> 
+      }, 
+      {
+        path: "/view",
+        element: <View/>
       }
     ]
   }, 

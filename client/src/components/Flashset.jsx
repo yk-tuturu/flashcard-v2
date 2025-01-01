@@ -2,6 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.scss';
 import "../browse.scss";
+import {useNavigate} from "react-router-dom"
 
 // bootstrap
 import Button from 'react-bootstrap/Button';
@@ -21,8 +22,10 @@ const Flashset = (props) => {
         day: 'numeric',
       }).format(date);
     
+    const navigate = useNavigate();
+    
     return (
-        <div className="flashset-div p-3 mb-3">
+        <div className="flashset-div p-3 mb-3" onClick={()=>{navigate("/view")}}>
             <Row>
                 <Col>
                     <h3>{props.title}</h3>
