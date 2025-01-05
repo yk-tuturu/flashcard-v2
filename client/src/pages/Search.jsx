@@ -1,10 +1,11 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.scss';
 import "../browse.scss";
 import Flashset from "../components/Flashset"
 import {useNavigate, useLocation } from 'react-router-dom';
 import axios from "axios";
+import { AuthContext } from "../context/authContext";
 
 // bootstrap
 import Button from 'react-bootstrap/Button';
@@ -13,8 +14,6 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
-import CardGroup from 'react-bootstrap/CardGroup';
 
 const Search = () => {
     const subjects = ["Sciences", "Social Sciences", "Arts and Humanities", "Math", "Languages", "Other"];
@@ -27,6 +26,8 @@ const Search = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
+    
+    const {currentUser} = useContext(AuthContext)
 
     const queryParams = new URLSearchParams(location.search);
     const subject = queryParams.get("subject")
@@ -49,6 +50,8 @@ const Search = () => {
                     url.searchParams.append("sort", sort)
                     setSelectedSort(sort);
                 }
+
+                url.searchParams.append("user_id", currentUser.id)
                 
                 const res = await axios.get(url)
                 const newArray = [];
@@ -59,8 +62,10 @@ const Search = () => {
                         title: res.data[i].title,
                         subject: res.data[i].subject,
                         user: res.data[i].user_id,
-                        likes: res.data[i].likes,
-                        bookmarks: res.data[i].bookmarks,
+                        likes: res.data[i].like_count,
+                        bookmarks: res.data[i].bookmark_count,
+                        is_liked: res.data[i].is_liked,
+                        is_bookmarked: res.data[i].is_bookmarked,
                         length: res.data[i].length,
                         date: res.data[i].date_created
                     })
@@ -177,6 +182,7 @@ const Search = () => {
                                 {sortTypes.map((sort, index) => {
                                     return (
                                         <Form.Check 
+                                            key={index}
                                             type="radio" 
                                             name={sort}
                                             label={sort}
@@ -212,6 +218,8 @@ const Search = () => {
                             subject={flashset.subject}
                             likes={flashset.likes}
                             bookmarks={flashset.bookmarks}
+                            is_liked={flashset.is_liked}
+                            is_bookmarked={flashset.is_bookmarked}
                             user={flashset.user}
                             length={flashset.length}
                             date={flashset.date}

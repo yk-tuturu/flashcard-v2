@@ -1,0 +1,67 @@
+$slider-bg: rgb(229, 225, 235);
+$slider-fill: rgb(81, 67, 93);
+$highlight: rgba(176, 138, 194, 0.388);
+
+.slider {
+    /* removing default appearance */
+    -webkit-appearance: none;
+    appearance: none;
+    /* creating a custom design */
+    width: 80%;
+    height: 0.8rem;
+    cursor: pointer;
+    outline: none;
+    border-radius: 16px;
+    background: $slider-bg;
+}
+
+
+/* Thumb: webkit */
+.slider::-webkit-slider-thumb {
+    /* removing default appearance */
+    -webkit-appearance: none;
+    appearance: none;
+    /* creating a custom design */
+    height: 1.4rem;
+    width: 1.4rem;
+    border-radius: 50%;
+    border: none;
+    background-color: $slider-fill;
+    transition: .2s ease-in-out;
+}
+
+/* Thumb: Firefox */
+.slider::-moz-range-thumb {
+    height: 1.4rem;
+    width: 1.4rem;
+    border-radius: 50%;
+    border: none;
+    background-color: $slider-fill;
+    transition: .2s ease-in-out;
+}
+
+/* Hover, active & focus Thumb: Webkit */
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 10px $highlight
+}
+input[type="range"]:active::-webkit-slider-thumb {
+  box-shadow: 0 0 0 13px $highlight
+}
+input[type="range"]:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 13px $highlight
+}
+
+/* Hover, active & focus Thumb: Firfox */
+
+input[type="range"]::-moz-range-thumb:hover {
+  box-shadow: 0 0 0 10px $highlight
+}
+input[type="range"]:active::-moz-range-thumb {
+  box-shadow: 0 0 0 13px $highlight
+}
+input[type="range"]:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 13px $highlight 
+}
+
+

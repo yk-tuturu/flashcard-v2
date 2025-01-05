@@ -80,6 +80,7 @@ export const createCardSet = (req, res) => {
 export const getCardSets = (req, res) => {
     let searchTerm =  req.query.q || "";
     let subjects = req.query.subject;
+    let user_id = req.query.user_id;
     const limit = req.query.limit || 10;
     const sort = req.query.sort || "Relevance"
 
@@ -96,21 +97,61 @@ export const getCardSets = (req, res) => {
         processedSearch = "%" + searchTerm + "%"
     }
     
-    let q = `SELECT *, MATCH(title) AGAINST(? IN BOOLEAN MODE) AS relevance
-            FROM flashsets 
-            WHERE ${searchTerm.length > 5 ? 'MATCH(title) AGAINST(? IN BOOLEAN MODE)' : 'title LIKE ?'}
-            ${subjects.length > 0 ? 'AND subject IN ?' : ''} `;
+    // what the fuck is this query
+    let q = `SELECT 
+                flashsets.id,
+                flashsets.title,
+                flashsets.user_id,
+                flashsets.length,
+                flashsets.subject,
+                flashsets.date_created, 
+                MATCH(flashsets.title) AGAINST(? IN BOOLEAN MODE) AS relevance,
+                CASE WHEN bookmarks.user_id IS NOT NULL THEN TRUE ELSE FALSE END AS is_bookmarked,
+                COALESCE(bookmark_counts.bookmark_count, 0) AS bookmark_count,
+                CASE WHEN likes.user_id IS NOT NULL THEN TRUE ELSE FALSE END AS is_liked,
+                COALESCE(like_counts.like_count, 0) AS like_count
+            FROM 
+                flashsets
+            LEFT JOIN
+                bookmarks ON flashsets.id = bookmarks.flashset_id AND bookmarks.user_id = ?
+            LEFT JOIN 
+                (
+                    SELECT 
+                        flashset_id, 
+                        COUNT(*) AS bookmark_count
+                    FROM 
+                        bookmarks
+                    GROUP BY 
+                        flashset_id
+                ) AS bookmark_counts ON flashsets.id = bookmark_counts.flashset_id
+            LEFT JOIN
+                likes ON flashsets.id = likes.flashset_id AND likes.user_id = ?
+            LEFT JOIN 
+                (
+                    SELECT 
+                        flashset_id, 
+                        COUNT(*) AS like_count
+                    FROM 
+                        likes
+                    GROUP BY 
+                        flashset_id
+                ) AS like_counts ON flashsets.id = like_counts.flashset_id    
+            WHERE ${searchTerm.length > 5 ? 'MATCH(flashsets.title) AGAINST(? IN BOOLEAN MODE)' : 'flashsets.title LIKE ?'}
+            ${subjects.length > 0 ? 'AND flashsets.subject IN ?' : ''} `;
 
     if (sort === "Relevance") {
         q += "ORDER BY relevance DESC "
     } else if (sort === "Popular") {
-        q += "ORDER BY likes DESC, bookmarks DESC "
+        q += "ORDER BY bookmark_count DESC"
     } else if (sort === "Recent") {
         q += "ORDER BY date_created DESC "
     }
 
     q += "LIMIT " + limit;
-    const values = subjects.length > 0 ? [processedSearch, processedSearch, [subjects], limit] : [processedSearch, processedSearch, limit];
+    const values = subjects.length > 0 
+        ? [processedSearch, user_id, user_id, processedSearch, [subjects], limit] 
+        : [processedSearch, user_id, user_id, processedSearch, limit];
+    
     db.query(q, values, (err, data) => {
         if (err) return res.json(err);
         return res.status(200).json(data)

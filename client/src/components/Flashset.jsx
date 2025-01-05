@@ -1,4 +1,4 @@
-import React from 'react';
+import {useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.scss';
 import "../browse.scss";
@@ -15,6 +15,8 @@ import Card from 'react-bootstrap/Card';
 import CardGroup from 'react-bootstrap/CardGroup';
 
 const Flashset = (props) => {
+    const [liked, setLiked] = useState(props.is_liked);
+    const [bookmarked, setBookmarked] = useState(props.is_bookmarked);
     const date = new Date(props.date)
     const formattedDate = new Intl.DateTimeFormat('en-US', {
         year: 'numeric',
@@ -25,7 +27,7 @@ const Flashset = (props) => {
     const navigate = useNavigate();
     
     return (
-        <div className="flashset-div p-3 mb-3" onClick={()=>{navigate("/view")}}>
+        <div className="flashset-div p-3 mb-3" onClick={()=>{navigate(`/view/${props.id}`)}}>
             <Row>
                 <Col>
                     <h3>{props.title}</h3>
@@ -33,7 +35,10 @@ const Flashset = (props) => {
                     <div className="mb-2"><span>Author: {props.user}</span><span>Date Added: {formattedDate}</span><span>Length: {props.length}</span></div>
                 </Col>
                 <Col md={12} lg={2} className="d-flex flex-row flex-lg-column">
-                    <span className="d-flex flex-row"><img src="heart.png" alt="Likes"></img>{props.likes} </span>
+                    <span className="d-flex flex-row">
+                        <img src="heart.png" alt="Likes"></img>
+                        {props.likes} 
+                    </span>
                     <span className="d-flex flex-row"><img src="bookmark.png" alt="Likes"></img>{props.bookmarks}</span>
                 </Col>
             </Row>

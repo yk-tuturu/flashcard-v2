@@ -6,17 +6,15 @@ import {useNavigate, useLocation } from 'react-router-dom';
 import axios from "axios";
 import ShortUniqueId from "short-unique-id";
 import parse from "html-react-parser"
+import {shuffleArray} from "../util.js"
 
 import CardViewer from "../components/CardViewer";
 
 // bootstrap
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
 
 const View = () => {
     const [info, setInfo] = useState({
@@ -30,7 +28,8 @@ const View = () => {
     const [ogCards, setOgCards] = useState([]);
     const [shuffle, setShuffle] = useState(false);
 
-    const flashSetId = 31;
+    const location = useLocation()
+    const flashSetId = location.pathname.split("/")[2]
     const uid = new ShortUniqueId({ length: 7 });
 
     useEffect(()=> {
@@ -55,6 +54,7 @@ const View = () => {
                   bookmarks: res.data[0].bookmarks
                 })
                 setCards(newCards);
+                setOgCards(newCards);
               }
             catch(err) {
                 console.log(err)
@@ -62,6 +62,19 @@ const View = () => {
         }
         fetchData();
     }, [flashSetId])
+
+    function toggleShuffle() {
+        if (shuffle) {
+            setCards(ogCards);
+        } else {
+            const oldCards = cards.slice()
+            const shuffledCards = shuffleArray(oldCards)
+            setCards(shuffledCards);
+        }
+
+        setShuffle(!shuffle);
+    }
+
     return (
         <Container fluid className="--bg-secondary fill-screen p-4 disable-horizontal-scroll">
             <Row className="d-flex justify-content-center">
@@ -74,12 +87,28 @@ const View = () => {
             </Row>
             <Row className="justify-content-md-center mt-4">
                 <Col md={12} lg={8} className="--bg-primary p-0" >
-                <div className="tab-bar">
-                    <button id="flash" className="tab-item-active">Flashcards</button>
-                    <button id="memo" className="tab-item">Memorize</button>
-                </div>
-                <CardViewer cards={cards}></CardViewer>
+                    <div className="tab-bar">
+                        <div>
+                            <button id="flash" className="tab-item-active">Flashcards</button>
+                            <button id="memo" className="tab-item">Memorize</button>
+                        </div>
+                        <div>
+                            <button 
+                                className={shuffle ? "tab-item-active" : "tab-item"} 
+                                onClick={toggleShuffle}>
+                                    <img src={shuffle ? "/shuffle-white.png" : "/shuffle.png"} alt="shuffle"></img>
+                            </button>
+                        </div>
+                        
+                    </div>
+                    <CardViewer cards={cards}></CardViewer>
+                    <div className="control-tips">
+                        <p>Keyboard Controls:</p>
+                        <p>-  Left/Right to move</p>
+                        <p>-  Up/Down/Space to flip</p>
+                    </div>
                 </Col>
+                
             </Row>
         </Container>
     )

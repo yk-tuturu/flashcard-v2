@@ -22,7 +22,6 @@ const Edit = () => {
 
   const {currentUser} = useContext(AuthContext);
 
-  // debug cardset id, will dynamically get this from the url after we're done with everything else
   // to know which flashset we are supposed to fetch, we read the url
   const location = useLocation()
   const cardsetId = location.pathname.split("/")[2]
