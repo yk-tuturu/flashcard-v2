@@ -1,8 +1,9 @@
 import {useState} from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../App.scss';
-import SubjectCard from "../components/SubjectCard"
 import {useNavigate} from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/App.scss';
+
+import SubjectCard from "../components/SubjectCard"
 
 // bootstrap
 import Button from 'react-bootstrap/Button';
@@ -11,14 +12,13 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
-import CardGroup from 'react-bootstrap/CardGroup';
 
 const Browse = () => {
     const subjects = ["Sciences", "Social Sciences", "Arts and Humanities", "Math", "Languages", "Other"];
     const [searchValue, setSearchValue] = useState("");
     const navigate = useNavigate();
 
+    // when search button is pressed, or enter key pressed
     const onSearch = (e) => {
         e.preventDefault();
 
@@ -37,6 +37,7 @@ const Browse = () => {
             onSearch(e);
         }
     }
+    
     return (
         <Container fluid className="--bg-secondary p-4 fill-screen">
             <Row className="w-100 justify-content-md-center">
@@ -64,7 +65,7 @@ const Browse = () => {
                 <Row xs={1} md={2} lg={3}  className="g-4">
                     {subjects.map((subject, index) => {
                         return (
-                            <Col><SubjectCard title={subject}></SubjectCard></Col>
+                            <Col><SubjectCard title={subject} key={subject}></SubjectCard></Col>
                         )
                     })}
                 </Row>

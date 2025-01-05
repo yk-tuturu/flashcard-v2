@@ -11,6 +11,7 @@ const SortableWrapper = (props) => {
         transition,
     };
     
+    // tbh the more i look at this, the less i understand about how this actually works
     const cardRef = (node) => {
         if (node) {
             props.cardsRef.set(props.id, node); // Store node in parent's Map

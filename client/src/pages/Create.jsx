@@ -1,24 +1,25 @@
 import {useState, useContext, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
-
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../App.scss';
+import '../styles/App.scss';
+
+import axios from "axios";
+
 import { AuthContext } from "../context/authContext";
 
 // bootstrap
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
-import CardGroup from 'react-bootstrap/CardGroup';
-
-import axios from "axios";
 
 const Create = () => {
-    const [info, setInfo] = useState({title: "", subject: "", description: ""})
+    const [info, setInfo] = useState({
+        title: "", 
+        subject: "", 
+        description: ""
+    })
     const [error, setError] = useState("");
 
     const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Create = () => {
         if (!currentUser) {
           navigate("/login")
         }
-    }, [currentUser])
+    }, [currentUser, navigate])
 
     const handleInfoChange = (e) => {
         setInfo((prev) => ({...prev, [e.target.name]: e.target.value}));
@@ -41,10 +42,10 @@ const Create = () => {
         try{
             const data = {...info, user_id: currentUser.id}
             await axios.post("http://localhost:8800/cards/create", data).then((res)=>{
-                if (res.data.id != undefined) {
+                if (res.data.id !== undefined) {
                     navigate(`/edit/${res.data.id}`)
                 } else {
-                    setError("Something went wrong!");
+                    setError("Something went wrong!"); 
                 }
             })
         } catch(err){

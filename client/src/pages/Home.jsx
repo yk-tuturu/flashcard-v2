@@ -1,7 +1,6 @@
-
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../App.scss';
+import '../styles/App.scss';
 
 // bootstrap
 import Button from 'react-bootstrap/Button';

@@ -1,10 +1,12 @@
-import '../editorStyles.scss'
+import {forwardRef, useImperativeHandle, useEffect} from 'react'
 
+// tiptap imports
 import TextAlign from '@tiptap/extension-text-align'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
-import {forwardRef, useImperativeHandle, useEffect} from 'react'
+
+import '../styles/editorStyles.scss'
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
@@ -53,6 +55,7 @@ const MenuBar = ({ editor }) => {
 }
 
 export default forwardRef((props, ref) => {
+  // create tiptap editor
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -61,9 +64,18 @@ export default forwardRef((props, ref) => {
         types: ['heading', 'paragraph'],
       }),
     ],
+
     content: props.initText,
+
     onUpdate: ({ editor }) => {
       props.handleChange(editor.getHTML()); // Update content state on change
+    },
+    onFocus: ({event}) => {
+      editor.commands.scrollIntoView();
+      props.handleFocusChange(props.side, props.index) // scrolls into view, updates focus state in parent
+    }, 
+    onBlur: ({event}) => {
+      props.handleFocusChange(props.side, -1) // -1 to represent no card focused
     }
   })
 
@@ -79,39 +91,6 @@ export default forwardRef((props, ref) => {
       }
     };
   }, [editor]);
-
-  useEffect(() => {
-    if (!editor) return;
-
-    // Add an event listener for focus
-    editor.view.dom.addEventListener('focus', () => {
-      editor.commands.scrollIntoView();
-      props.handleFocusChange(props.side, props.index)
-    });
-
-    // Cleanup event listener
-    return () => {
-      editor.view.dom.removeEventListener('focus', () => {
-        console.log('Editor focus event cleaned up.');
-      });
-    };
-  }, [editor, props.side, props.index]);
-
-  useEffect(() => {
-    if (!editor) return;
-
-    // Add blur event listener
-    editor.view.dom.addEventListener('blur', () => {
-      props.handleFocusChange(props.side, -1)
-    });
-
-    // Cleanup on unmount
-    return () => {
-      editor.view.dom.removeEventListener('blur', () => {
-        console.log('Blur listener removed!');
-      });
-    };
-  }, [editor, props.side, props.index]);
 
   return (
     <div className="tiptap-div">

@@ -22,9 +22,41 @@ export const saveCards = (req, res) => {
 }
 
 export const getCards = (req, res) => {
-    const id = req.params.id; 
+    const id = req.query.id; 
+    const user_id = req.query.user;
 
-    const q = "SELECT ?? FROM flashsets f INNER JOIN users u ON u.id = f.user_id WHERE f.id = ?"
+    const q = `SELECT ??,
+                COUNT(likes.id) AS like_count,
+                COUNT(bookmarks.id) AS bookmark_count,
+                CASE 
+                    WHEN EXISTS (
+                        SELECT 1 
+                        FROM likes 
+                        WHERE likes.flashset_id = f.id 
+                        AND likes.user_id = ?
+                    ) 
+                    THEN TRUE 
+                    ELSE FALSE 
+                END AS is_liked,
+                CASE 
+                    WHEN EXISTS (
+                        SELECT 1 
+                        FROM bookmarks 
+                        WHERE bookmarks.flashset_id = f.id 
+                        AND bookmarks.user_id = ?
+                    ) 
+                    THEN TRUE 
+                    ELSE FALSE 
+                END AS is_bookmarked
+            FROM flashsets f
+            INNER JOIN 
+                users u ON u.id = f.user_id 
+            LEFT JOIN 
+                likes ON f.id = likes.flashset_id
+            LEFT JOIN 
+                bookmarks ON f.id = bookmarks.flashset_id
+            WHERE f.id = ?
+            GROUP BY f.id`
 
     const columns = [
         "f.id",
@@ -32,14 +64,13 @@ export const getCards = (req, res) => {
         "title",
         "subject",
         "length",
-        "likes",
-        "bookmarks",
-        "username",
+        "u.username",
         "flashcards",
-        "description"
+        "description",
+        "date_created"
     ]
 
-    db.query(q, [columns, req.params.id], (err, data) => {
+    db.query(q, [columns, user_id, user_id, id], (err, data) => {
         if (err) return res.status(502).json(err)
         
         return res.status(200).json(data)
@@ -102,6 +133,7 @@ export const getCardSets = (req, res) => {
                 flashsets.id,
                 flashsets.title,
                 flashsets.user_id,
+                users.username,
                 flashsets.length,
                 flashsets.subject,
                 flashsets.date_created, 
@@ -112,6 +144,8 @@ export const getCardSets = (req, res) => {
                 COALESCE(like_counts.like_count, 0) AS like_count
             FROM 
                 flashsets
+            INNER JOIN
+                users ON users.id = flashsets.user_id
             LEFT JOIN
                 bookmarks ON flashsets.id = bookmarks.flashset_id AND bookmarks.user_id = ?
             LEFT JOIN 

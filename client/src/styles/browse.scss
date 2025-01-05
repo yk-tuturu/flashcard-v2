@@ -26,13 +26,37 @@
         font-size: 24px;
     }
 
-    img {
-        height: 20px;
-        margin-bottom: 10px;
-        margin-right: 8px;
+
+    a:link {
+        color: rgb(139, 82, 177);
+    }
+    
+    a:visited {
+        color: rgb(78, 56, 97); 
     }
 }
 
 .flashset-div:hover {
     border: 2px solid rgb(54, 51, 62);
 }
+
+.likes-button {
+    border: none;
+    background-color: white;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    margin-right: 4px;
+
+    img {
+        height: 20px;
+    }
+}
+
+.likes-button:hover {
+    background-color: rgb(189, 189, 189);
+}
+
+

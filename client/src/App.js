@@ -1,5 +1,4 @@
-import logo from './logo.svg';
-import './App.scss';
+import './styles/App.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   Outlet,

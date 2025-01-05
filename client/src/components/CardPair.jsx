@@ -1,12 +1,13 @@
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../App.scss';
+
+import Tiptap from './TipTap';
+
+import '../styles/App.scss';
 
 // bootstrap
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
-import Tiptap from './TipTap';
 
 const CardPair = forwardRef((props, ref) => {
     const frontRef = useRef(null);
@@ -33,7 +34,7 @@ const CardPair = forwardRef((props, ref) => {
         }
     }, [])
 
-    // just a bunch of functions to call functions in the parent component
+    // just a wrapper functions to call functions in the parent component
     const handleAdd = () => {
         props.functions.addCard(props.index);
     }
@@ -55,10 +56,24 @@ const CardPair = forwardRef((props, ref) => {
             {props.index + 1}.
             <Row xs={1} md={2} className="g-4">
                 <Col>
-                    <Tiptap side="front" index={props.index} initText={props.frontValue} handleFocusChange={props.functions.handleFocusChange} handleChange={handleFrontChange} ref={frontRef} ></Tiptap>
+                    <Tiptap 
+                        side="front" 
+                        index={props.index} 
+                        initText={props.frontValue} 
+                        handleFocusChange={props.functions.handleFocusChange} 
+                        handleChange={handleFrontChange} 
+                        ref={frontRef}>    
+                    </Tiptap>
                 </Col>
                 <Col>
-                    <Tiptap side="back" index={props.index} initText={props.backValue} handleFocusChange={props.functions.handleFocusChange} handleChange={handleBackChange} ref={backRef}></Tiptap>
+                    <Tiptap 
+                        side="back" 
+                        index={props.index} 
+                        initText={props.backValue} 
+                        handleFocusChange={props.functions.handleFocusChange} 
+                        handleChange={handleBackChange} 
+                        ref={backRef}>
+                    </Tiptap>
                 </Col>
             </Row>
                 

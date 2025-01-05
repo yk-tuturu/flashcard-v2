@@ -1,24 +1,28 @@
-import {useState, useContext, useEffect, useRef} from 'react';
+// main react
+import {useState, useContext, useEffect, useRef, useMemo, useCallback} from 'react';
+import {useNavigate, useLocation} from "react-router-dom"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../App.scss';
+import '../styles/App.scss';
+
+// other libraries
+import ShortUniqueId from "short-unique-id";
+import axios from "axios";
+import {DndContext, closestCorners } from "@dnd-kit/core";
+import {SortableContext, verticalListSortingStrategy, arrayMove} from "@dnd-kit/sortable";
+
+// files from codebase
 import SortableWrapper from "../components/SortableWrapper"
 import { AuthContext } from '../context/authContext';
 
+// bootstrap
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-import ShortUniqueId from "short-unique-id";
-import axios from "axios";
-import {DndContext, closestCorners } from "@dnd-kit/core";
-import {SortableContext, verticalListSortingStrategy, arrayMove} from "@dnd-kit/sortable";
-
-import {useNavigate, useLocation} from "react-router-dom"
-
 const Edit = () => {
-  const uid = new ShortUniqueId({ length: 7 });
+  const uid = useMemo(() => new ShortUniqueId({length: 7}), [])
 
   const {currentUser} = useContext(AuthContext);
 
@@ -53,7 +57,7 @@ const Edit = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:8800/cards/get/${cardsetId}`)
+        const res = await axios.get(`http://localhost:8800/cards/get?id=${cardsetId}&user=${currentUser.id}`)
         
         // if you're not the author, kicks you back to homepage
         // yeah prolly not the best way to implement this, can change this later
@@ -83,7 +87,7 @@ const Edit = () => {
       }
     };
     fetchData()
-  }, [cardsetId, currentUser])
+  }, [cardsetId, currentUser.id, navigate, uid])
 
   // handles change in the info fields -- title, description, etc
   const handleInfoChange = (e) => {
@@ -122,71 +126,20 @@ const Edit = () => {
     }
   }
   
-  // when user presses tab, automatically moves focus to next card, or if at the end of cards, create a new one
-  useEffect(() => {
-    const TabFunction = (event) => {
-      if (event.key === "Tab") {
-        const map = getMap()
-        
-        // -1 represents no card focused, so do nothing
-        if (focusedCard.index === -1) {
-          return
-        }
-        
-        // if at front, moves focus to the back of the same card
-        if (focusedCard.side === "front") {
-          const card_id = cards[focusedCard.index].id;
-          const node = map.get(card_id);
-          node.focusBack();
-        } 
-        
-        // if at back, moves focus to front of next card
-        else if (focusedCard.side === "back") {
-          // if at last card, adds a new card
-          if (focusedCard.index === cards.length - 1) {
-            addCard(cards.length - 1);
-            setAppended(true); // boolean used to focus the new card only when its been generated
-            return;
-          }
-          
-          // else just get the next card
-          const next_card_id = cards[focusedCard.index + 1].id;
-          const node = map.get(next_card_id);
-          node.focusFront()
-        }
-      }
-    }
-    document.addEventListener("keydown", TabFunction, false);
-
-    return () => {
-      document.removeEventListener("keydown", TabFunction, false);
-    };
-  }, [info, focusedCard, cards]);
-  
-  // if we added a card just now from the tab function, focus the new card 
-  useEffect(()=> {
-    if (appended) {
-      const card_id = cards[cards.length - 1].id;
-      const map = getMap();
-      const node = map.get(card_id);
-      node.focusFront();
-      setAppended(false);
-    }
-  }, [appended, cards])
-  
-  // if user manually switches focus, updates state to reflect this
-  function handleFocusChange(side, index) {
-    setFocusedCard({side: side, index: index});
-  }
-
   // adds new card... nothing much to say
-  function addCard(index) {
+  const addCard = useCallback((index)=> {
     const newCards = [
       ...cards.slice(0, index + 1), 
       {id: uid.rnd(), front: "", back: ""},
       ...cards.slice(index + 1)
     ]
     setCards(newCards)
+  }, [cards, uid])
+
+  // if user manually switches focus, updates state to reflect this
+  function handleFocusChange(side, index) {
+    console.log(side, index)
+    setFocusedCard({side: side, index: index});
   }
 
   // deletes card... nothing much to say
@@ -209,6 +162,57 @@ const Edit = () => {
     setCards(newCards);
   }
 
+  // when user presses tab, automatically moves focus to next card, or if at the end of cards, create a new one
+  useEffect(() => {
+    const TabFunction = (event) => {
+      if (event.key === "Tab") {
+        const map = getMap()
+        
+        // -1 represents no card focused, so do nothing
+        if (focusedCard.index === -1) {
+          return
+        }
+        
+        // if at front, moves focus to the back of the same card
+        if (focusedCard.side === "front") {
+          const card_id = cards[focusedCard.index].id;
+          const node = map.get(card_id);
+          node.focusBack();
+        } 
+        
+        // if at back, moves focus to front of next card
+        else if (focusedCard.side === "back") {
+          if (focusedCard.index === cards.length - 1) {  // if at last card, adds a new card
+            addCard(cards.length - 1);
+            setAppended(true); // boolean used to focus the new card only when its been generated
+            return;
+          }
+          
+          // else just get the next card
+          const next_card_id = cards[focusedCard.index + 1].id;
+          const node = map.get(next_card_id);
+          node.focusFront()
+        }
+      }
+    }
+    document.addEventListener("keydown", TabFunction, false);
+
+    return () => {
+      document.removeEventListener("keydown", TabFunction, false);
+    };
+  }, [info, focusedCard, cards, addCard]);
+  
+  // if we added a card just now from the tab function, focus the new card 
+  useEffect(()=> {
+    if (appended) {
+      const card_id = cards[cards.length - 1].id;
+      const map = getMap();
+      const node = map.get(card_id);
+      node.focusFront();
+      setAppended(false);
+    }
+  }, [appended, cards])
+  
   // helper function for on drag end
   function getCardIndexById(id) {
     return cards.findIndex(card=>card.id === id);

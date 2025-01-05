@@ -2,15 +2,16 @@ import {db} from "../db.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
+// yes, the security on this is kind of a joke, but i'll figure out how to send verification emails later
 export const login = (req, res) => {
     const q = "SELECT * FROM users WHERE username = ? AND email= ?"
     console.log(req.body)
     db.query(q, [req.body.username, req.body.email], (err, data) => {
-        if (err) return res.json(err)
-        if (data.length === 0) return res.status(404).json("User not found!")
+        if (err) return res.status(502).json(err)
+        if (data.length === 0) return res.status(502).json("User not found!")
         
         const isPasswordCorrect = bcrypt.compareSync(req.body.password, data[0].password_hash)
-        if (!isPasswordCorrect) return res.status(404).json("Incorrect username or password")
+        if (!isPasswordCorrect) return res.status(502).json("Incorrect username or password")
 
         const token = jwt.sign({id: data[0].id}, "jwtkey")
         const {password_hash, ...other} = data[0]
@@ -24,6 +25,17 @@ export const login = (req, res) => {
 export const register = (req, res) => {
     console.log('reached register')
     console.log(req.body.username);
+    if (!req.body.username || req.body.username.length <= 0) {
+        return res.status(502).json("Username cannot be empty")
+    }
+
+    if (!req.body.email || req.body.email.length <= 0 || !req.body.email.includes("@")) {
+        return res.status(502).json("Email provided must be valid");
+    }
+
+    if (!req.body.password || req.body.password.length < 8) {
+        return res.status(502).json("Password must be at least 8 characters long")
+    }
     const q = "SELECT * FROM users WHERE email = ? OR username = ?"
 
     db.query(q, [req.body.email, req.body.username], (err, data) => {

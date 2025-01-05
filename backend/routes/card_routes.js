@@ -4,7 +4,7 @@ import { saveCards, getCards, createCardSet, getCardSets } from "../controllers/
 const router = express.Router()
 
 router.post("/save", saveCards)
-router.get("/get/:id", getCards)
+router.get("/get", getCards)
 router.post("/create", createCardSet)
 router.get("/getCards", getCardSets)
 
